@@ -8,7 +8,7 @@ import zio.interop.catz.implicits._
 import org.http4s._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.implicits._
-import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.blaze.server.BlazeServerBuilder
 
 object Main extends App {
 
@@ -32,7 +32,10 @@ object Main extends App {
           .toManagedZIO
           .useForever
           .foldCauseM(
-            err => putStrLn(err.prettyPrint).as(ExitCode.failure),
+            err => {
+              putStrLn(err.prettyPrint)
+              ZIO.succeed(ExitCode.failure)
+            },
             _ => ZIO.succeed(ExitCode.success)
           )
       }
